@@ -1,4 +1,4 @@
-# Home Assistant iCLICK BESTJOY LFO 小飞碟集成
+# Home Assistant iCLICK&BESTJOY LFO 小飞碟集成
 
 [English](../README.md) | [简体中文](./README_zh.md)
 
