@@ -18,7 +18,7 @@ iCLICK LFO 小飞碟网关是一个可以接收homeassistant的TCP指令，转�
 
 ## 配置
 
-[设置 > 设备与服务 > 添加集成](https://my.home-assistant.io/redirect/brand/?brand=iclick_LFO) > 搜索“`iCLICK LFO`” > 下一步 > 输入iCLICK LFO小飞碟的局域网IP地址，端口号默认是9999不要更改。
+[设置 > 设备与服务 > 添加集成](https://my.home-assistant.io/redirect/brand/?brand=iclick) > 搜索“`iCLICK LFO`” > 下一步 > 输入iCLICK LFO小飞碟的局域网IP地址，端口号默认是9999不要更改。
 
 [![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=iclick)
 
