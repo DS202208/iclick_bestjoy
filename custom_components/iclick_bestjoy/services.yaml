@@ -1,6 +1,0 @@
-send_command:
-  fields:
-    data:
-      selector:
-        text:  # 声明输入为文本类型
-          pattern: "^[0-9A-Fa-f]+$"  # 正则约束十六进制格式[2](@ref)
