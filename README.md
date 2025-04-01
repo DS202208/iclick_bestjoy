@@ -31,6 +31,19 @@ Download and copy `custom_components/iclick` folder to `config/custom_components
 - Local control Support?
   Yes,full local control capability.
 
+- What is the maximum number of iCLICK LFOs supported by a single Home Assistant host?
+  Up to 9 units, numbered from 1 to 9. When adding an LFO, select its number (1-9) via a drag-and-drop interface.
+
+- How to configure automations and select a specific LFO?
+  
+  When editing an automation:
+  
+  Add an action → Miscellaneous actions → Execute Service → iCLICK LFO: send_command.
+  Check the "data" option and enter the command in the input field using the format <hub_id>-<TCP_command> (e.g., 1-0001), where:
+  1 represents the LFO's unique ID (1-9).  0001 is the TCP command to be sent.
+  
+  In the iCLICK App, set up the corresponding LFO automation to receive this TCP command (e.g., 0001) as the trigger condition.
+  This integration allows seamless control of iCLICK LFO devices through Home Assistant automations.
 
 ## Documents
 
