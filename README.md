@@ -38,7 +38,7 @@ Download and copy `custom_components/iclick` folder to `config/custom_components
   
   When editing an automation:
   
-  Add an action → Miscellaneous actions → Execute Service → iCLICK LFO: send_command.
+  Add action → Other actions → Perform an action → iCLICK LFO: send_command.
   Check the "data" option and enter the command in the input field using the format <hub_id>-<TCP_command> (e.g., 1-0001), where:
   1 represents the LFO's unique ID (1-9).  0001 is the TCP command to be sent.
   
