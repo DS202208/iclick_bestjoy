@@ -6,9 +6,10 @@ from .protocol import BestjoyProtocol
 _LOGGER = logging.getLogger(__name__)
 
 class BestjoyClient:
-    def __init__(self, host: str, port: int):
+    def __init__(self, host: str, port: int, hub_id: int): 
         self.host = host
         self.port = port
+        self.hub_id = hub_id
         # 连接相关资源
         self._reader = None
         self._writer = None
@@ -56,7 +57,7 @@ class BestjoyClient:
                 # 启动心跳任务
                 self._heartbeat_task = asyncio.create_task(
                     self._start_heartbeat(), 
-                    name="iclick_heartbeat"
+                    name=f"iclick_heartbeat_{self.host}"  # 增加主机标识
                 )
                 self._connection_ready = True
                 _LOGGER.info("Connection established")
@@ -79,28 +80,24 @@ class BestjoyClient:
         except asyncio.CancelledError:
             _LOGGER.debug("Heartbeat cancelled")
 
-    async def async_send_command(self, call):
-        """带自动恢复的指令发送"""
-        for attempt in range(3):  # 新增发送重试
+    async def async_send_command(self, data: str):  # 改为直接接收data字符串
+        """发送指令（自动处理协议封装）"""
+        for attempt in range(3):
             if not self._connection_ready:
-                _LOGGER.warning(f"Attempt {attempt+1}/3: Connection not ready")
+                _LOGGER.warning(f"Hub {self.hub_id} 连接未就绪（尝试 {attempt+1}/3）")
                 await self.async_reconnect()
                 continue
-                
             try:
-                packet = BestjoyProtocol.build_packet(
-                    call.data.get("data") if isinstance(call.data, dict) else call.data
-                )
+                packet = BestjoyProtocol.build_packet(data)
                 async with self._lock:
                     self._writer.write(packet)
                     await asyncio.wait_for(self._writer.drain(), timeout=5)
-                    return  # 成功发送后退出
+                    return
             except Exception as e:
-                _LOGGER.error(f"Send failed (attempt {attempt+1}): {str(e)}")
+                _LOGGER.error(f"Hub {self.hub_id} 发送失败：{str(e)}")
                 await self._trigger_recovery()
-                
-        _LOGGER.error("All send attempts failed")
-        await self._hard_reset()  # 触发硬重置
+        _LOGGER.error(f"Hub {self.hub_id} 所有发送尝试均失败")
+        await self._hard_reset()
 
     async def async_reconnect(self):
         """增强版重连逻辑"""

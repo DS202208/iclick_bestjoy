@@ -1,0 +1,36 @@
+  # 下面是iCLICK超遥的透传程序代码。注意修改。
+- id: '1743996067728'  #id如果增加，这里要修改+1
+  alias: M桥自动产生米家虚拟事件
+  description: M桥自动产生米家虚拟事件
+  triggers:
+  - topic: 289C6E838643/up  # 注意这里的MAC是M桥1的，如果是其它就要替换。
+    trigger: mqtt
+  conditions:
+  - condition: template
+    value_template: '{{ trigger.payload | regex_match(''^[0-9A-Fa-f]{2}$'') }}'
+  actions:
+  - data:
+      message: '["1-{{ trigger.payload | upper }}"]'  # 注意这里的1就是M桥1,如果是其它就要替换。
+    target:
+      entity_id: notify.xiaomi_cn_1146110364_hub1_emit_virtual_event_a_4_1  # 注意这里的编号是中枢网关的编号，要注意替换
+    action: notify.send_message
+  mode: single
+- id: '1743996227783'  #id如果增加，这里要修改+1
+  alias: 监听米家虚拟事件驱动小飞碟1
+  description: 监听米家虚拟事件驱动小飞碟1
+  triggers:
+  - entity_id: event.xiaomi_cn_1146110364_hub1_virtual_event_e_4_1  # 注意这里的编号是中枢网关的编号，要注意替换
+    trigger: state
+  conditions:
+  - condition: template  # 注意下面的1-是代表小飞碟1，如果是其它就要替换。
+    value_template: >-
+      {{  
+        trigger.to_state.attributes.event_type == '虚拟事件发生' and
+        trigger.to_state.attributes.事件名称 | regex_match('^1-[0-9A-Fa-f]{4}$')
+      }}  
+  actions:
+  - data_template:
+      data: '{{ trigger.to_state.attributes.事件名称 | upper }}'
+    action: iclick.send_command
+  mode: single
+  # 上面是iCLICK超遥的透传程序代码 DS 20250408

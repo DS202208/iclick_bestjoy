@@ -8,18 +8,18 @@ class BestjoyProtocol:
         """修复header未定义问题"""
         # 输入验证
         if not isinstance(data, str):
-            raise TypeError("指令必须为字符串类型")
+            raise TypeError("The data must be a hexadecimal string")
         
         # 清理输入
         data = data.strip().upper().replace(" ", "")
         
         # 验证十六进制格式
         if not data:
-            raise ValueError("指令不能为空")
+            raise ValueError("Data cannot be none")
         if len(data) % 2 != 0:
-            raise ValueError("指令长度必须为偶数")
+            raise ValueError("Data length must be even")
         if not all(c in "0123456789ABCDEF" for c in data):
-            raise ValueError("包含非法十六进制字符")
+            raise ValueError("Contains illegal hexadecimal characters")
 
         # 协议头必须在数据转换前定义
         header = bytes([0x55, 0xFF, 0x80])  # 正确位置

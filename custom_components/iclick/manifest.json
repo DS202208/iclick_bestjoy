@@ -1,9 +1,9 @@
 {
   "domain": "iclick",
   "name": "iCLICK LFO",
-  "version": "1.1.0",
+  "version": "1.2.6",
   "config_flow": true,
-  "documentation": "http://www.bestjoy.net",
+  "documentation": "https://github.com/DS202208/iclick_bestjoy",
   "codeowners": ["@ds"],
   "requirements": [],
   "iot_class": "local_polling"

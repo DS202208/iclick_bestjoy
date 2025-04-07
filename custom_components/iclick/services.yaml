@@ -1,6 +1,8 @@
 send_command:
   fields:
     data:
+      description: Format example：1-0001 (hub_id-hex data)
+      required: true
       selector:
-        text:  # 声明输入为文本类型
-          pattern: "^[0-9A-Fa-f]+$"  # 正则约束十六进制格式[2](@ref)
+        text:
+          pattern: "^[1-9]-[0-9A-Fa-f]+$"  # 正确正则（包含 hub_id）
