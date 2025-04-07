@@ -45,6 +45,19 @@ Download and copy `custom_components/iclick` folder to `config/custom_components
   In the iCLICK App, set up the corresponding LFO automation to receive this TCP command (e.g., 0001) as the trigger condition.
   This integration allows seamless control of iCLICK LFO devices through Home Assistant automations.
 
+- How to achieve automatic transmission?
+  1. Paste and overwrite the original file in the homeassistant folder directory with the automations.yaml file in the zip folder.
+
+  2. If the original file contains previously established automation, in order to avoid clearing data, you can also open the file above and paste the code inside into the original file.
+     
+  3. Pay attention to replacing the comments mentioned in the code that need to be modified, such as the ID, the number of the iclick LFO, the number of the Mi Home Central Gateway, M bridge,and so on.
+
+  4. When creating a virtual event in the Mi APP, the content should be entered in a format similar to 1-1001, where 1 represents LFO 1 and 1001 is the transmitted content.
+When establishing automation in iCLICK APP, the triggering condition should be filled in with 1001 and the number 1- should be removed.
+
+  5. In the code, there is also iCLICK super remote transmitted to Mi APP through M-bridge transmission. In Mi APP, automation requires writing in the format of 1-01.
+Among them, 1 represents M-bridge 1, and 01 represents the M-bridge 01 key of iCLICK super remote.
+
 ## Documents
 
 - [License](../LICENSE.md)
