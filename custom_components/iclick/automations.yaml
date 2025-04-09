@@ -12,14 +12,14 @@
   - data:
       message: '["1-{{ trigger.payload | upper }}"]'  # 注意这里的1就是M桥1,如果是其它就要替换。
     target:
-      entity_id: notify.xiaomi_cn_1146110364_hub1_emit_virtual_event_a_4_1  # 注意这里的编号是中枢网关的编号，要注意替换
+      entity_id: notify.xiaomi_cn_1146110386_hub1_emit_virtual_event_a_4_1  # 注意这里的编号是中枢网关的编号，要注意替换
     action: notify.send_message
   mode: single
 - id: '1743996227783'  #id如果增加，这里要修改+1
   alias: 监听米家虚拟事件驱动小飞碟1
   description: 监听米家虚拟事件驱动小飞碟1
   triggers:
-  - entity_id: event.xiaomi_cn_1146110364_hub1_virtual_event_e_4_1  # 注意这里的编号是中枢网关的编号，要注意替换
+  - entity_id: event.xiaomi_cn_1146110386_hub1_virtual_event_e_4_1  # 注意这里的编号是中枢网关的编号，要注意替换
     trigger: state
   conditions:
   - condition: template  # 注意下面的1-是代表小飞碟1，如果是其它就要替换。
