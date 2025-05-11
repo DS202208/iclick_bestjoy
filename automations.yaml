@@ -1,0 +1,41 @@
+  # 下面是iCLICK超遥的透传程序代码。注意修改。
+- id: '1743996067728'
+  alias: 小飞碟1自动产生米家虚拟事件
+  description: 小飞碟1自动产生米家虚拟事件
+  triggers:
+  - topic: FE3043168733/up  #注意这里修改成小飞碟X的mac地址
+    trigger: mqtt
+  conditions:
+  - condition: template
+    value_template: "{{\n  trigger.payload | regex_match('^[0-9A-Fa-f]{4}$') and \n
+      \ (trigger.payload | upper | int(base=16)) <= 0x03E9 \n}}"
+  actions:
+  - data:
+      message: '["1-{{ trigger.payload | upper }}"]'  #注意这里的1-表示小飞碟X第一个，如果有第二个小飞碟X，除了复制本段代码，修改id之外，还要把1改成2。
+    target:
+      entity_id: notify.xiaomi_cn_1146110365_hub1_emit_virtual_event_a_4_1
+    action: notify.send_message  #注意上面的1146110365，要改成你的米家中枢网关的ID。
+  mode: single
+- id: '1743996227783'
+  alias: 监听米家虚拟事件驱动小飞碟1
+  description: 监听米家虚拟事件驱动小飞碟1
+  triggers:
+  - entity_id:
+    - event.xiaomi_cn_1146110365_hub1_virtual_event_e_4_1
+    trigger: state    #注意上面的1146110365，要改成你的米家中枢网关的ID。
+  conditions:
+  - condition: template
+    value_template: "{{\n  trigger.to_state.attributes.event_type == '虚拟事件发生' and\n
+      \ trigger.to_state.attributes.事件名称 | regex_match('^1-[0-9A-Fa-f]{4}$') and\n
+      \ (trigger.to_state.attributes.事件名称.split('-')[1] | upper | int(base=16)) >=
+      0x1000 and\n  (trigger.to_state.attributes.事件名称.split('-')[1] | upper | int(base=16))
+      <= 0x13E9\n}}"   #注意这里的[1]表示小飞碟X第一个，如果有第二个小飞碟X，除了复制本段代码，修改id之外，还要把1改成2。
+  actions:
+  - action: mqtt.publish
+    data_template:
+      topic: FE3043168733/down    #注意这里修改成小飞碟X的mac地址
+      qos: 0
+      retain: false
+      payload: "{{ \n  trigger.to_state.attributes.事件名称.split('-')[1] | upper \n}}"
+  mode: single
+  # 上面是iCLICK超遥的透传程序代码 DS 20250508
