@@ -1,8 +1,14 @@
 send_command:
   fields:
+    entry_id:
+      name: Entry ID
+      description: The entry ID of the iClick instance.
+      required: true
+      example: "abc123def456"
+      selector:
+        text:
     data:
-      description: Format example：1-0001 (hub_id-hex data)
+      description: Format example：xxxx-0001 (hub_id-hex data)
       required: true
       selector:
         text:
-          pattern: "^[1-9]-[0-9A-Fa-f]+$"  # 正确正则（包含 hub_id）

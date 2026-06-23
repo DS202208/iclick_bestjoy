@@ -1,12 +1,14 @@
+"""client.py of an iClick Gateway."""
 import asyncio
 import logging
 import random
-from .protocol import BestjoyProtocol
+
+from .const import HEARTBEAT_INTERVAL, MAX_RECONNECT_RETRIES, BASE_RECONNECT_DELAY, MAX_RECONNECT_DELAY
 
 _LOGGER = logging.getLogger(__name__)
 
 class BestjoyClient:
-    def __init__(self, host: str, port: int, hub_id: int): 
+    def __init__(self, host: str, port: int, hub_id: str):
         self.host = host
         self.port = port
         self.hub_id = hub_id
@@ -20,9 +22,9 @@ class BestjoyClient:
         self._heartbeat_task = None
         # 重连策略
         self._reconnect_attempts = 0
-        self._max_retries = 5          # 最大自动重试次数
-        self._base_reconnect_delay = 1.0
-        self._max_reconnect_delay = 60.0
+        self._max_retries = MAX_RECONNECT_RETRIES          # 最大自动重试次数
+        self._base_reconnect_delay = BASE_RECONNECT_DELAY
+        self._max_reconnect_delay = MAX_RECONNECT_DELAY
 
     async def async_test_connection(self) -> bool:
         """测试连接（深度重置版）"""
@@ -50,10 +52,12 @@ class BestjoyClient:
                 # 等待网关初始化完成
                 await asyncio.sleep(5)
                 # 建立新连接
+                _LOGGER.info(f"API try open_connection  {self.host}:{self.port}")
                 self._reader, self._writer = await asyncio.wait_for(
                     asyncio.open_connection(self.host, self.port),
                     timeout=10
                 )
+                _LOGGER.info(f"API try open_connection success")
                 # 启动心跳任务
                 self._heartbeat_task = asyncio.create_task(
                     self._start_heartbeat(), 
@@ -81,16 +85,17 @@ class BestjoyClient:
             _LOGGER.debug("Heartbeat cancelled")
 
     async def async_send_command(self, data: str):  # 改为直接接收data字符串
-        """发送指令（自动处理协议封装）"""
-        for attempt in range(3):
+        """直接发送原始指令（不进行协议封装）"""
+        for attempt in range(3):  # <-- 错误发生位置
             if not self._connection_ready:
                 _LOGGER.warning(f"Hub {self.hub_id} 连接未就绪（尝试 {attempt+1}/3）")
                 await self.async_reconnect()
                 continue
             try:
-                packet = BestjoyProtocol.build_packet(data)
+                # 直接发送原始数据（不进行协议封装）
+                bytes_data = bytes.fromhex(data)
                 async with self._lock:
-                    self._writer.write(packet)
+                    self._writer.write(bytes_data)
                     await asyncio.wait_for(self._writer.drain(), timeout=5)
                     return
             except Exception as e:
@@ -106,7 +111,7 @@ class BestjoyClient:
         
         while self._reconnect_attempts < self._max_retries:
             delay = self._calc_retry_delay()
-            _LOGGER.warning(f"Reconnect attempt {self._reconnect_attempts+1}/{self._max_retries}")
+            _LOGGER.warning(f"Reconnect attempt {self._reconnect_attempts+1}/{self._max_retries}, delay={delay}")
             
             try:
                 await asyncio.sleep(delay)
