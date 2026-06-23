@@ -8,7 +8,7 @@
   conditions:
   - condition: template
     value_template: "{{\n  trigger.payload | regex_match('^[0-9A-Fa-f]{4}$') and \n
-      \ (trigger.payload | upper | int(base=16)) <= 0x03E9 \n}}"
+      \ (trigger.payload | upper | int(base=16)) <= 0x1000 \n}}"
   actions:
   - data:
       message: '["1-{{ trigger.payload | upper }}"]'  #注意这里的1-表示小飞碟X第一个，如果有第二个小飞碟X，除了复制本段代码，修改id之外，还要把1改成2。
@@ -28,8 +28,8 @@
     value_template: "{{\n  trigger.to_state.attributes.event_type == '虚拟事件发生' and\n
       \ trigger.to_state.attributes.事件名称 | regex_match('^1-[0-9A-Fa-f]{4}$') and\n
       \ (trigger.to_state.attributes.事件名称.split('-')[1] | upper | int(base=16)) >=
-      0x1000 and\n  (trigger.to_state.attributes.事件名称.split('-')[1] | upper | int(base=16))
-      <= 0x13E9\n}}"   #注意这里的[1]表示小飞碟X第一个，如果有第二个小飞碟X，除了复制本段代码，修改id之外，还要把1改成2。
+      0x1001 and\n  (trigger.to_state.attributes.事件名称.split('-')[1] | upper | int(base=16))
+      <= 0x2000\n}}"   #注意这里的[1]表示小飞碟X第一个，如果有第二个小飞碟X，除了复制本段代码，修改id之外，还要把1改成2。
   actions:
   - action: mqtt.publish
     data_template:
